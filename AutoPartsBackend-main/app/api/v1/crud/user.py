@@ -48,3 +48,15 @@ def delete_user(db: Session, user_id: int):
     db.delete(db_user)
     db.commit()
     return db_user
+
+
+def get_user_by_email(db: Session, email: str):
+    return db.query(model.User).filter(model.User.email == email).first()
+
+def authenticate_user(db: Session, email: str, password: str):
+    user = get_user_by_email(db, email)
+    if not user:
+        return None
+    if user.password != password:
+        return None
+    return user

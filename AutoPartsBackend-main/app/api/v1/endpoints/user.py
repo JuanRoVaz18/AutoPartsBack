@@ -35,3 +35,10 @@ def delete_user(user_id: int, db: Session = Depends(get_db)):
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
     return db_user
+
+@router.post("/login", response_model=schema.User)
+def login(payload: schema.UserLogin, db: Session = Depends(get_db)):
+    user = crud.authenticate_user(db, payload.email, payload.password)
+    if not user:
+        raise HTTPException(status_code=401, detail="Credenciales inválidas")
+    return user
